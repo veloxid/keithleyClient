@@ -35,57 +35,40 @@ keithleySubClientHandler::keithleySubClientHandler(std::string clientName):subCl
 
 bool keithleySubClientHandler::analyseData(packetData_t data)
 {
-	if(data.aboName=="/keithley"){
-		cout<<"received Data:"<<data.timeStamp<<" "<<data.data<<endl;
-		//	if(data.data.find("start")!=data.data.end())
-		string aboData =data.data;
-
-		/*
-		 * PROGRam
-		 */
-		if(aboData.find(":PROGR")!=string::npos){
-			if(aboData.find(":STAR")!=string::npos){
-
-			}
-			else if(aboData.find(":CAT")!=string::npos){
-				//todo
-			}
-			else if(aboData.find(":SEL")!=string::npos||aboData.find(":SET")!=string::npos){
-				//int programNumber=extractProgramNumber(aboData);
-				//jumo.setProgramNumber(programNumber);
-			}
-			else if (aboData.find("NEXT")!=string::npos){
-				//jumo.nextStep();
-			}
-			else if(aboData.find("PAUS")!=string::npos){
-				//					jumo.pauseProgram();
-			}
-			else if(aboData.find("STAT")!=string::npos){
-				//todo
-			}
-			else if(aboData.find(":HELP?")!=string::npos){
-				//todo
-			}
-			else if(aboData.find(":NUM?")!=string::npos){
-				//todo
-			}
-
-		}
-		/*
-		 *
-		 */
-		else if(aboData.find(":HELP?")!=string::npos)
-		{
-			printHelp();
-		}
-
+	if(data.aboName!="/keithley")
+		return 0;
+	cout<<"received Data:"<<data.timeStamp<<" "<<data.data<<endl;
+	//	if(data.data.find("start")!=data.data.end())
+	string aboData =data.data;
+	interpret.interpreteData(data.data);
+	if (interpret.isAnswer())
+		return (1);
+	if(interpret.hasCommandOnPlace("CLIENT",0)){
 	}
+	else if(interpret.hasCommandOnPlace("OUTPUT",0)){
+		if(interpret.isCommand())
+			if(interpret.getComand()=="ON")
+				keithley->TurnOutputOn();
+			else if((interpret.getComand()=="OFF"))
+				keithley->TurnOutputOff();
+	}
+	else if(interpret.hasCommandOnPlace("HELP",0)){
+		printHelp();
+	}
+
 
 	return 1;
 }
 
 void keithleySubClientHandler::printHelp(){
-	stringstream test;
+	stringstream help;
+	help<<"HELP FOR KEITHLEY SUBSYSTEM CLIENT, by IPP, ETH ZURICH\n";
+	help<<"COMMAND:   \tFUNCTION \n";
+	help<<":CLIENT    \t \n";
+	help<<":OUTPut VAR\tSET OUTPUT TO VAR, VAR in {ON,OFF}\n";
+	help<<":HELP      \tPrint this help\n";
+
+	this->sendToServer("\keithley",help.str().c_str());
 }
 
 void keithleySubClientHandler::openConnection(std::string port){

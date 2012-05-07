@@ -92,13 +92,13 @@ int main(int argc, char *argv[]) {
 	signal(SIGTERM, sigint_handler);
 	client->subscribeAbo("/keithley");
 	client->getAboFromServer();
-//	client->setTimeOut(2);
+	client->setTimeOut(1);
 ////	//pthread_t p1;
-//	client->sendAndReceive();
-//	client->killClient();
-//	client->closeDevice();
-//	while(!client->isClientKilled())
-//		usleep(10);
-//	delete client;
+	client->sendAndReceive();
+	client->killClient();
+	client->closeDevice();
+	while(!client->isClientKilled())
+		usleep(10);
+	delete client;
 	return EXIT_SUCCESS;
 }
