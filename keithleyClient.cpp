@@ -18,6 +18,8 @@
 #include "subsystem/signalnames.h"
 #include <signal.h>	// signal()
 #include <pthread.h>
+#include <rs232/linux_rs232.h>
+#include <rs232/KEITHLEY/SourceMeter_2400/KEITHLEY_SourceMeter_2400.h>
 //void print_sum(float x, float y)
 //{
 //  std::cout << "The sum is " << x+y << std::endl;
@@ -41,8 +43,8 @@ void sigint_handler(int sig) {
 	client->killClient();
 	eprintf("received %s(%d)\n", SIGNAME[sig], sig);
 	client->killClient();
-
 	client->closeConnection();
+	client->closeDevice();
 	std::cout<<"client: "<<client->isOk()<<std::endl;
 }
 
@@ -85,18 +87,21 @@ int main(int argc, char *argv[]) {
 	readInputs(argc,argv);
 	client = new keithleySubClientHandler("keithleyClient");
 	client->openConnection("/dev/ttyF1");
+	client->keithley->TurnOutputOn();
+	sleep(2);
+	client->keithley->TurnOutputOff();
 	atexit(cleanexit);
 	signal(SIGINT, sigint_handler);
 	signal(SIGTERM, sigint_handler);
 	client->subscribeAbo("/keithley");
 	client->getAboFromServer();
-	client->setTimeOut(2);
-	//pthread_t p1;
-	client->sendAndReceive();
-	client->killClient();
-	client->closeConnection();
-	while(!client->isClientKilled())
-		usleep(10);
-	delete client;
+//	client->setTimeOut(2);
+////	//pthread_t p1;
+//	client->sendAndReceive();
+//	client->killClient();
+//	client->closeDevice();
+//	while(!client->isClientKilled())
+//		usleep(10);
+//	delete client;
 	return EXIT_SUCCESS;
 }

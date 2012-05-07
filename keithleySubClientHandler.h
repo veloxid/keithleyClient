@@ -11,14 +11,15 @@
 #include <list>
 #include <queue>
 #include <set>
-
+#include <errno.h>
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <sys/select.h>
+#include <unistd.h>	// read, STD*_FILENO
 
 #include <rs232/linux_rs232.h>
 #include <rs232/KEITHLEY/SourceMeter_2400/KEITHLEY_SourceMeter_2400.h>
@@ -29,7 +30,7 @@ class 	keithleySubClientHandler: public subClientHandler{
 public:
 	keithleySubClientHandler(std::string clientName="keithleyClient");
 	void openConnection(std::string port="");
-	void closeConnection();
+	void closeDevice();
 	void setDevice(std::string port);
 public:
 	KEITHLEY_SourceMeter_2400 *keithley;
