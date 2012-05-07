@@ -124,14 +124,6 @@ void keithleySubClientHandler::openDevice(){
 			cout<<"Delete com"<<endl;
 		}
 	}
-	sleep(1);
-	cout<<"ON"<<endl;
-	keithley->TurnOutputOn();
-	sleep(3);
-	cout<<"OFF"<<endl;
-	keithley->TurnOutputOff();
-	sleep(1);
-	cout<<"DONE"<<endl;
 }
 
 void  keithleySubClientHandler::setDevice(std::string port){
@@ -146,6 +138,8 @@ void keithleySubClientHandler::initilaiseKeithley(){
 	if(!bComOpen)
 		return;
 	cout<<"Initialise Keithley:\n\tTest IDN:\""<<keithley->GetIdentificationCode()<<"\""<<endl;
+	cout<<"SERIALNUMBER: "<<keithley->GetSerialNumber()<<endl;
+	keithley->GetModelType();
 	cout<<"\"DONE\n\tDisableControlBeeper"<<flush;
 	keithley->EnalbeControlBeeper();
 	cout<<"...DONE\n\tSelectRearTerminal"<<flush;
@@ -164,13 +158,15 @@ void keithleySubClientHandler::initilaiseKeithley(){
 	keithley->EnableConcurrentMeasurments();
 	cout<<"...DONE\n\tSetCurrentCompliance"<<flush;
 	keithley->SetCurrentCompliance(100e-6);
-	cout<<"...DONE\n\tSelectRearTerminal"<<flush;
+	cout<<"...DONE\n\tSelectCurrentMeasureRange->20e-6"<<flush;
 	keithley->SelectCurrentMeasureRange(20e-6);
-	cout<<"...DONE\n\tSelectRearTerminal"<<flush;
+	cout<<"...DONE\n\tSetCurrentMeasurementSpeed->10"<<flush;
 	keithley->SetCurrentMeasurementSpeed(10);
+	cout<<"...DONE\n\tSetImmediateVoltageLevel->-150"<<flush;
 	keithley->SetImmediateVoltageLevel(-150);
-
+	cout<<"...DONE\n\tTurnOutputOn"<<flush;
 	keithley->TurnOutputOn();
+	cout<<"...DONE\n"<<endl;
 }
 
 void keithleySubClientHandler::printTime(){

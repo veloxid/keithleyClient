@@ -87,9 +87,6 @@ int main(int argc, char *argv[]) {
 	readInputs(argc,argv);
 	client = new keithleySubClientHandler("keithleyClient");
 	client->openConnection("/dev/ttyF1");
-	client->keithley->TurnOutputOn();
-	sleep(2);
-	client->keithley->TurnOutputOff();
 	atexit(cleanexit);
 	signal(SIGINT, sigint_handler);
 	signal(SIGTERM, sigint_handler);

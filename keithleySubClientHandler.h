@@ -20,6 +20,7 @@
 #include <string.h>
 #include <sys/select.h>
 #include <unistd.h>	// read, STD*_FILENO
+#include <unistd.h>
 
 #include <rs232/linux_rs232.h>
 #include <rs232/KEITHLEY/SourceMeter_2400/KEITHLEY_SourceMeter_2400.h>
