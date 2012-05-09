@@ -47,10 +47,15 @@ bool keithleySubClientHandler::analyseData(packetData_t data)
 	}
 	else if(interpret.hasCommandOnPlace("OUTPUT",0)){
 		if(interpret.isCommand())
-			if(interpret.getComand()=="ON")
+			cout<<"OUTPUT: \""<<interpret.getComand()<<"\""<<endl;
+			if(interpret.getComand()=="ON"){
 				keithley->TurnOutputOn();
-			else if((interpret.getComand()=="OFF"))
+				cout<<"Turn Output ON "<<endl;
+			}
+			else if((interpret.getComand()=="OFF")){
 				keithley->TurnOutputOff();
+				cout<<"Turn Output OFF"<<endl;
+			}
 	}
 	else if(interpret.hasCommandOnPlace("HELP",0)){
 		printHelp();
@@ -68,7 +73,7 @@ void keithleySubClientHandler::printHelp(){
 	help<<":OUTPut VAR\tSET OUTPUT TO VAR, VAR in {ON,OFF}\n";
 	help<<":HELP      \tPrint this help\n";
 
-	this->sendToServer("\keithley",help.str().c_str());
+	this->sendToServer("/keithley",help.str().c_str());
 }
 
 void keithleySubClientHandler::openConnection(std::string port){
