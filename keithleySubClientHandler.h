@@ -51,6 +51,7 @@ public:
 private:
 	void openDevice();
 	void initilaiseKeithley();
+	void sweepKeithley(double start, double stop, double step, int nCounts, double delay=1);
 	void printTime();
 public:
 	bool analyseData(packetData_t data);

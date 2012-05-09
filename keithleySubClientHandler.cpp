@@ -43,7 +43,9 @@ bool keithleySubClientHandler::analyseData(packetData_t data)
 	interpret.interpreteData(data.data);
 	if (interpret.isAnswer())
 		return (1);
+	bool commandBeenProcessed = false;
 	if(interpret.hasCommandOnPlace("CLIENT",0)){
+		commandBeenProcessed = true;
 	}
 	else if(interpret.hasCommandOnPlace("OUTPUT",0)){
 		if(interpret.isCommand())
@@ -51,16 +53,27 @@ bool keithleySubClientHandler::analyseData(packetData_t data)
 			if(interpret.getComand()=="ON"){
 				keithley->TurnOutputOn();
 				cout<<"Turn Output ON "<<endl;
+				commandBeenProcessed = true;
 			}
 			else if((interpret.getComand()=="OFF")){
 				keithley->TurnOutputOff();
 				cout<<"Turn Output OFF"<<endl;
+				commandBeenProcessed = true;
 			}
+	}
+	else if(interpret.hasCommandOnPlace("SOUR",0)){
+		if(interpret.hasCommandOnPlace("SWE",1)){
+			cout<<"SWEEEEEEEEEEP:"<<endl;
+			this->sweepKeithley(0,-150,5,2,0.1);
+		}
 	}
 	else if(interpret.hasCommandOnPlace("HELP",0)){
 		printHelp();
+		commandBeenProcessed = true;
 	}
-
+	if(!commandBeenProcessed){
+		keithley->sendstring(data.data);
+	}
 
 	return 1;
 }
@@ -155,6 +168,23 @@ void keithleySubClientHandler::initilaiseKeithley(){
 	cout<<"...DONE\n\tTurnOutputOn"<<flush;
 	keithley->TurnOutputOn();
 	cout<<"...DONE\n"<<endl;
+}
+
+void keithleySubClientHandler::sweepKeithley(double start, double stop, double step, int nCounts, double delay) {
+	//missing: set bias level to 0v
+	keithley->SetSourceDelay(delay);
+	keithley->SelectBestSourceRanging();
+	//missing: sweep soruce mode
+	keithley->SelectLinearSweepScale();
+	keithley->SpecifySweepVoltageStartLevel(start);
+	keithley->SpecifySweepVoltageStopLevel(stop);
+	keithley->SpecifyLinearSweepVoltageStepLevel(step);
+	int counter = (stop-start)/step;
+	counter *= nCounts;
+	keithley->SetTriggerCount(counter);
+	keithley->TurnOutputOn();
+	for(int i =0;i<counter;i++)
+		cout<<i<<"\t"<<keithley->GetDataString()<<endl;
 }
 
 void keithleySubClientHandler::printTime(){
