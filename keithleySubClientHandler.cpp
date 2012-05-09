@@ -174,7 +174,7 @@ void keithleySubClientHandler::sweepKeithley(double start, double stop, double s
 	//missing: set bias level to 0v
 	keithley->SetSourceDelay(delay);
 	keithley->SelectBestSourceRanging();
-	//missing: sweep soruce mode
+	keithley->SetSweepVoltageSourceMode();//not sure: instead of SOUR:VOLT:MODE SWE
 	keithley->SelectLinearSweepScale();
 	keithley->SpecifySweepVoltageStartLevel(start);
 	keithley->SpecifySweepVoltageStopLevel(stop);
